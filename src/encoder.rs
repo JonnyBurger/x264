@@ -95,41 +95,17 @@ impl Encoder {
     ///     }
     /// }
     /// ```
-    pub fn flush(self) -> Flush {
-        Flush { encoder: self }
-    }
 
-    /// The width required of any input images.
-    pub fn width(&self) -> i32 {
-        self.params.i_width
-    }
-    /// The height required of any input images.
-    pub fn height(&self) -> i32 {
-        self.params.i_height
-    }
-    /// The encoding required of any input images.
-    pub fn encoding(&self) -> Encoding {
-        unsafe { Encoding::from_raw(self.params.i_csp) }
-    }
-}
-
-impl Drop for Encoder {
-    fn drop(&mut self) {
+    /// Close the h264 encoder.
+    pub fn drop(&mut self) {
         unsafe {
             x264_encoder_close(self.raw);
         }
     }
-}
 
-/// Iterate through any delayed frames.
-pub struct Flush {
-    encoder: Encoder,
-}
-
-impl Flush {
-    /// Keeps flushing.
+    /// Begins flushing the encoder, to handle any delayed frames.
     pub fn next(&mut self) -> Option<Result<(Data, Picture)>> {
-        let enc = self.encoder.raw;
+        let enc = self.raw;
 
         if unsafe { x264_encoder_delayed_frames(enc) } == 0 {
             return None;
@@ -152,5 +128,18 @@ impl Flush {
                 )
             })
         })
+    }
+
+    /// The width required of any input images.
+    pub fn width(&self) -> i32 {
+        self.params.i_width
+    }
+    /// The height required of any input images.
+    pub fn height(&self) -> i32 {
+        self.params.i_height
+    }
+    /// The encoding required of any input images.
+    pub fn encoding(&self) -> Encoding {
+        unsafe { Encoding::from_raw(self.params.i_csp) }
     }
 }
