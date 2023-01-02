@@ -9,6 +9,7 @@ pub struct Encoder {
 }
 
 unsafe impl Send for Encoder {}
+unsafe impl Send for Data<'_> {}
 
 impl Encoder {
     /// Creates a new builder with default options.
