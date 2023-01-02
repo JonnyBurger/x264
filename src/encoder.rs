@@ -8,10 +8,6 @@ pub struct Encoder {
     params: x264_param_t,
 }
 
-unsafe impl Send for Encoder {}
-unsafe impl Send for Data<'_> {}
-unsafe impl Sync for Data<'_> {}
-
 impl Encoder {
     /// Creates a new builder with default options.
     ///
