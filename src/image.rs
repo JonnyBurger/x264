@@ -80,6 +80,11 @@ impl<'a> Image<'a> {
         let plane = Plane { stride: data.len() as i32 / height, data };
         Self::new(Colorspace::BGRA, width, height, &[plane])
     }
+    /// Makes a new packed BGRA image.
+    pub fn yuv(width: i32, height: i32, data: &'a [u8]) -> Self {
+        let plane = Plane { stride: data.len() as i32 / height, data };
+        Self::new(Colorspace::I420, width, height, &[plane])
+    }
 
     /// Makes a new image with the given planes and colorspace.
     ///
