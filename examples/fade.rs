@@ -38,13 +38,12 @@ fn main() {
     // Finally, flush any delayed frames.
 
     {
-        while let Some(result) = encoder.next() {
+        let mut flush = encoder.flush();
+        while let Some(result) = flush.next() {
             let (data, _) = result.unwrap();
             file.write_all(data.entirety()).unwrap();
         }
     }
-
-    encoder.drop();
 
     println!("Done! The output is at `fade.h264`.");
     println!("Good luck finding a H.264 viewer, though! ;)");
